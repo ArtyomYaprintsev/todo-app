@@ -1,0 +1,7 @@
+# Gitlint is a git commit message linter written in python: it checks your commit messages for style.
+# https://jorisroovers.com/gitlint/
+gitlint
+
+# For proper import sorting
+# https://github.com/PyCQA/isort
+isort

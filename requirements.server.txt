@@ -1,0 +1,11 @@
+# Fastapi
+# https://fastapi.tiangolo.com/
+fastapi
+
+# Uvicorn
+# url
+uvicorn[standard]
+
+# SqlModel
+# https://sqlmodel.tiangolo.com/
+sqlmodel
