@@ -1,1 +1,22 @@
+# IDE
+.idea/
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+
+# Backup files
+*.bak
+
+### Python template
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environment
 venv/
+venv.bak/
+.env
+
+# local
+*.local
