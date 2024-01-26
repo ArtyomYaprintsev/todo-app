@@ -18,3 +18,38 @@ Temporary description placeholder.
 - [] Add JWT usage
 - [] Authentication via TOTP (e.g. Google Authenticator app)
 
+## Development
+
+### Install requirements
+
+Install requirements
+
+```bash
+pip install -r requirements.txt
+```
+
+### How to check code and commit style
+
+Check code style:
+
+```bash
+bash code-style.sh
+```
+
+Check commit style:
+
+```bash
+gitlint
+```
+
+Fix imports:
+
+```bash
+isort .
+```
+
+### Install linter for your commits messages
+
+```bash
+gitlint install-hook
+```
