@@ -8,7 +8,7 @@ Temporary description placeholder.
 
 ## Roadmap
 
-- [ ] CRUD operations for the `Task` model
+- [x] CRUD operations for the `Task` model
 - [ ] CRUD operations for the `TaskList` model
 - [ ] Add base token authentication (with login and password)
 - [ ] Relate the `TaskList` model with the `User` model
