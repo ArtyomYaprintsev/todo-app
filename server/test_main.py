@@ -1,12 +1,12 @@
 from datetime import datetime
-import pytest
 
+import pytest
 from fastapi.testclient import TestClient
 from fastapi_pagination import Page, add_pagination
-from sqlmodel import SQLModel, Session, create_engine
+from sqlmodel import Session, SQLModel, create_engine
 from sqlmodel.pool import StaticPool
 
-from .main import app, get_session, Task
+from .main import Task, app, get_session
 
 
 @pytest.fixture(name='session')
