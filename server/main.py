@@ -36,7 +36,7 @@ class HTTPError(SQLModel):
 
 
 base_dir = Path(__file__).resolve().parent
-sqlite_filename = os.getenv('SQLITE_DATABASE')
+sqlite_filename = os.getenv('SQLITE_DATABASE', 'db.sqlite3')
 
 engine = create_engine(
     'sqlite:///%s' % (base_dir.parent / sqlite_filename),
