@@ -3,6 +3,8 @@ from pathlib import Path
 from datetime import datetime
 from typing import Optional, Annotated
 from fastapi import FastAPI, HTTPException, Depends
+from fastapi.encoders import jsonable_encoder
+from fastapi.responses import JSONResponse
 from sqlmodel import SQLModel, Session, Field, create_engine, select
 
 from fastapi_pagination import Page, add_pagination
@@ -91,7 +93,16 @@ def create_task(
     task: TaskCreate,
     session: Annotated[Session, Depends(get_session)],
 ):
-    return save_task(Task(**task.model_dump()), session)
+    created_task = save_task(Task(**task.model_dump()), session)
+
+    return JSONResponse(
+        content=jsonable_encoder(created_task),
+        status_code=201,
+        headers={
+            'Location': '/tasks/%d/' % created_task.id,
+            'Content-Type': 'application/json',
+        },
+    )
 
 
 @app.get(
@@ -155,7 +166,8 @@ def delete_task_instance(
     session.delete(task)
     session.commit()
 
-    return HTTPException(
+    return JSONResponse(
+        content=None,
         status_code=204,
-        detail='No content',
+        headers={"Cache-Control": "no-cache, no-store"},
     )
