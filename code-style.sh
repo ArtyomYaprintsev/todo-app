@@ -1,2 +1,2 @@
 set -xe
-isort camp --check-only
+isort server --check-only
