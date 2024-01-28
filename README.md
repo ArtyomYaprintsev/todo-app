@@ -2,7 +2,7 @@
 
 Todo application with FastAPI
 
-[![Coverage Status](https://img.shields.io/codecov/c/github/ArtyomYaprintsev/todo-app/main)](https://codecov.io/gh/ArtyomYaprintsev/todo-app)
+[![Coverage status](https://codecov.io/gh/ArtyomYaprintsev/todo-app/graph/badge.svg?token=RDYICGNMNP)](https://codecov.io/gh/ArtyomYaprintsev/todo-app)
 
 ## Description
 
