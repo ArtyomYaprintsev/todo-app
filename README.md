@@ -2,6 +2,8 @@
 
 Todo application with FastAPI
 
+[![Coverage Status](https://img.shields.io/codecov/c/github/ArtyomYaprintsev/todo-app/main)](https://codecov.io/gh/ArtyomYaprintsev/todo-app)
+
 ## Description
 
 Temporary description placeholder.
