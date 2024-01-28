@@ -50,7 +50,7 @@ app = FastAPI()
 add_pagination(app)
 
 
-def select_task(task_id: int, session: Session) -> Task:
+def select_task(task_id: int, session: Session):
     return session.exec(select(Task).where(Task.id == task_id)).first()
 
 
@@ -62,11 +62,8 @@ def save_task(task: Task, session: Session) -> Task:
 
 
 def get_session():
-    session = Session(engine)
-    try:
+    with Session(engine) as session:
         yield session
-    finally:
-        session.close()
 
 
 def retrieve_task(
@@ -108,7 +105,7 @@ def create_task(
     },
     tags=['tasks'],
 )
-def get_task_instance(task: Annotated[int, Depends(retrieve_task)]):
+def retrieve_task_instance(task: Annotated[int, Depends(retrieve_task)]):
     return task
 
 
