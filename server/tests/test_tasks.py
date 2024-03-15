@@ -6,7 +6,9 @@ from fastapi_pagination import Page, add_pagination
 from sqlmodel import Session, SQLModel, create_engine
 from sqlmodel.pool import StaticPool
 
-from .main import Task, app, get_session
+from server.dependencies import get_session
+from server.main import app
+from server.models.tasks import Task
 
 
 @pytest.fixture(name='session')
