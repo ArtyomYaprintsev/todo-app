@@ -22,7 +22,7 @@ router = APIRouter(
 
 @router.get('/', response_model=Page[Task])
 def get_all_tasks(session: Annotated[Session, Depends(get_session)]):
-    return paginate(session, select(Task).order_by(Task.created))
+    return paginate(session, select(Task).order_by(Task.created_at))
 
 
 @router.post('/', response_model=Task)
@@ -75,7 +75,7 @@ def update_task_instance(
         if value is not None:
             setattr(task, field, value)
 
-    task.modified = datetime.now()
+    task.modified_at = datetime.now()
     return save_task(task, session)
 
 
