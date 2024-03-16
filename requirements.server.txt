@@ -17,3 +17,7 @@ fastapi-pagination
 # Alembic is a lightweight database migration tool for SQLAlchemy
 # https://alembic.sqlalchemy.org/en/latest/
 alembic
+
+# Library to work with Postgresql
+# https://pypi.org/project/psycopg2-binary/
+psycopg2-binary
