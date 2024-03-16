@@ -137,8 +137,12 @@ def test_update_task_instance(client: TestClient, task: Task):
     assert response.status_code == 200
 
     response_task = Task(**response.json())
-    response_task.modified = datetime.fromisoformat(response_task.modified)
-    response_task.created = datetime.fromisoformat(response_task.created)
+    response_task.modified_at = datetime.fromisoformat(
+        response_task.modified_at,
+    )
+    response_task.created_at = datetime.fromisoformat(
+        response_task.created_at,
+    )
 
     assert isinstance(response_task, Task)
     assert response_task.id == initial_task.id
@@ -148,9 +152,9 @@ def test_update_task_instance(client: TestClient, task: Task):
     assert response_task.is_completed == updated_task_is_completed
 
     # Verify that task modified datetime is changed
-    assert response_task.modified > initial_task.modified
+    assert response_task.modified_at > initial_task.modified_at
     # Verify that task created datetime is not changed
-    assert response_task.created == initial_task.created
+    assert response_task.created_at == initial_task.created_at
 
 
 def test_update_task_instance_with_invalid_data(
