@@ -13,3 +13,7 @@ sqlmodel
 # Fastapi pagination
 # https://uriyyo-fastapi-pagination.netlify.app/
 fastapi-pagination
+
+# Alembic is a lightweight database migration tool for SQLAlchemy
+# https://alembic.sqlalchemy.org/en/latest/
+alembic
