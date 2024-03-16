@@ -3,7 +3,6 @@ from fastapi_pagination import add_pagination
 
 from server.routers import tasks
 
-
 app = FastAPI()
 
 add_pagination(app)
