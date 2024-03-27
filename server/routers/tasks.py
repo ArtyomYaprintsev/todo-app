@@ -4,32 +4,25 @@ from typing import Annotated, Optional
 from fastapi import APIRouter, Depends
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
-from fastapi_pagination import Page
-from fastapi_pagination.ext.sqlmodel import paginate
-from sqlmodel import Session, select
+from sqlmodel import Session
 
+from server.db.tasklists import retrieve_tasklist
 from server.db.tasks import retrieve_task, save_task
 from server.dependencies import get_session
 from server.models.errors import HTTPError
-from server.models.tasks import Task, TaskCreate, TaskUpdate
+from server.models.tasks import Task, TaskCreate, TaskRead, TaskUpdate
 
-router = APIRouter(
-    prefix="/tasks",
-    tags=["tasks"],
-    dependencies=[Depends(get_session)],
-)
+router = APIRouter(prefix="/tasks", tags=["tasks"])
 
 
-@router.get('/', response_model=Page[Task])
-def get_all_tasks(session: Annotated[Session, Depends(get_session)]):
-    return paginate(session, select(Task).order_by(Task.created_at))
-
-
-@router.post('/', response_model=Task)
+@router.post('/', response_model=TaskRead)
 def create_task(
     task: TaskCreate,
     session: Annotated[Session, Depends(get_session)],
 ):
+    # Check the related tasklists existence
+    retrieve_tasklist(task.tasklist_id, session)
+
     created_task = save_task(Task(**task.model_dump()), session)
 
     return JSONResponse(
@@ -44,7 +37,7 @@ def create_task(
 
 @router.get(
     '/{task_id}/',
-    response_model=Optional[Task],
+    response_model=Optional[TaskRead],
     responses={
         404: {
             'model': HTTPError,
@@ -58,7 +51,7 @@ def retrieve_task_instance(task: Annotated[int, Depends(retrieve_task)]):
 
 @router.put(
     '/{task_id}/',
-    response_model=Task,
+    response_model=TaskRead,
     responses={
         404: {
             'model': HTTPError,
