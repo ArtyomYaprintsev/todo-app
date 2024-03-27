@@ -55,3 +55,31 @@ isort .
 ```bash
 gitlint install-hook
 ```
+
+### Alembic usage
+
+Generate new version:
+
+```bash
+alembic revision --autogenerate -m "Message"
+```
+
+Run all migrations:
+
+```bash
+alembic upgrade head
+```
+
+### Pytest usage
+
+Run tests:
+
+```bash
+pytest .
+```
+
+Run tests with coverage:
+
+```bash
+pytest --cov-report html . --cov=./server/
+```
