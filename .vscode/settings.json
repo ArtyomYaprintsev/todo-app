@@ -17,4 +17,5 @@
   // Enable using pytest for testing
   "python.testing.unittestEnabled": false,
   "python.testing.pytestEnabled": true,
+  "cSpell.words": ["tasklist", "tasklists"]
 }
