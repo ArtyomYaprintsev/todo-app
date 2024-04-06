@@ -12,7 +12,7 @@ def select_task(task_id: int, session: Session):
     return session.exec(select(Task).where(Task.id == task_id)).first()
 
 
-def save_task(task: Task, session: Session) -> Task:
+def save_task(task: Task, session: Session):
     """Save task instance."""
     session.add(task)
     session.commit()
@@ -23,7 +23,7 @@ def save_task(task: Task, session: Session) -> Task:
 def retrieve_task(
     task_id: int,
     session: Annotated[Session, Depends(get_session)],
-) -> Task:
+):
     """Retrieve task instance.
 
     Raises:

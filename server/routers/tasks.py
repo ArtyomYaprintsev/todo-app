@@ -20,10 +20,15 @@ router = APIRouter(
 )
 
 
-@router.get("/", response_model=Page[Task])
-def get_all_tasks(session: Annotated[Session, Depends(get_session)]):
+@router.get("/")
+def get_all_tasks(
+    session: Annotated[Session, Depends(get_session)],
+) -> Page[Task]:
     """Get all tasks list."""
-    return paginate(session, select(Task).order_by(Task.created_at))
+    return paginate(
+        session,
+        select(Task).order_by(Task.created_at),  # type: ignore[arg-type]
+    )
 
 
 @router.post("/", response_model=Task)

@@ -147,10 +147,10 @@ def test_update_task_instance(client: TestClient, task: Task):
 
     response_task = Task(**response.json())
     response_task.modified_at = datetime.fromisoformat(
-        response_task.modified_at,
+        str(response_task.modified_at),
     )
     response_task.created_at = datetime.fromisoformat(
-        response_task.created_at,
+        str(response_task.created_at),
     )
 
     assert isinstance(response_task, Task)
