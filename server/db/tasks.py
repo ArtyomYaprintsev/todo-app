@@ -36,5 +36,5 @@ def retrieve_task(
 
     raise HTTPException(
         status_code=404,
-        detail="Task with the given [%d] id does not exist." % task_id,
+        detail=f"Task with the given [{task_id}] id does not exist.",
     )

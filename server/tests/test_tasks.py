@@ -77,7 +77,7 @@ def test_create_item(client: TestClient):
     assert response_task.text == created_task_text
 
     # Verify the response contains the Location header
-    assert response.headers.get("Location") == "/tasks/%d/" % response_task.id
+    assert response.headers.get("Location") == f"/tasks/{response_task.id}/"
 
 
 def test_create_item_without_text(client: TestClient):
@@ -110,7 +110,7 @@ def test_inexistent_task_returns_404(client: TestClient, http_method: str):
 
 def test_retrieve_task_instance(client: TestClient, task: Task):
     """Test task instance retrieve API endpoint."""
-    response = client.get("/tasks/%d/" % task.id)
+    response = client.get(f"/tasks/{task.id}/")
     assert response.status_code == 200
 
     response_task = Task(**response.json())
@@ -120,7 +120,12 @@ def test_retrieve_task_instance(client: TestClient, task: Task):
 
 
 def test_update_task_instance(client: TestClient, task: Task):
-    """Test task instance update API endpoint."""
+    """Test task instance update API endpoint.
+
+    Raises:
+        ValueError: if the `updated_task_text` matches with `Task` text from
+            fixture.
+    """
     updated_task_text = "Update task text"
     updated_task_is_completed = not task.is_completed
     # Need to copy the given task data into the new variable, because

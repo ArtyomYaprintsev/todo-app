@@ -43,7 +43,7 @@ def create_task(
         content=jsonable_encoder(created_task),
         status_code=201,
         headers={
-            "Location": router.prefix + "/%d/" % created_task.id,
+            "Location": f"router.prefix/{created_task.id}/",
             "Content-Type": "application/json",
         },
     )
