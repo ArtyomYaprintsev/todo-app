@@ -11,8 +11,9 @@ from server.main import app
 from server.models.tasks import Task
 
 
-@pytest.fixture(name='session')
+@pytest.fixture(name="session")
 def session_fixture():
+    """Create session with sqlite database."""
     engine = create_engine(
         "sqlite://",
         connect_args={"check_same_thread": False},
@@ -25,6 +26,7 @@ def session_fixture():
 
 @pytest.fixture(name="client")
 def client_fixture(session: Session):
+    """Init a test client with session."""
     def get_session_override():
         return session
 
@@ -35,9 +37,10 @@ def client_fixture(session: Session):
     app.dependency_overrides.clear()
 
 
-@pytest.fixture(name='task')
+@pytest.fixture(name="task")
 def task_instance(session: Session):
-    task = Task(text='Test task')
+    """Create task instance."""
+    task = Task(text="Test task")
     session.add(task)
     session.commit()
     session.refresh(task)
@@ -45,6 +48,7 @@ def task_instance(session: Session):
 
 
 def test_read_tasks_list(client: TestClient):
+    """Test all tasks read API endpoint."""
     response = client.get("/tasks/")
     assert response.status_code == 200
 
@@ -58,10 +62,11 @@ def test_read_tasks_list(client: TestClient):
 
 
 def test_create_item(client: TestClient):
-    created_task_text = 'New test task'
+    """Test task creation API endpoint."""
+    created_task_text = "New test task"
     response = client.post(
         "/tasks/",
-        json={'text': created_task_text},
+        json={"text": created_task_text},
     )
     assert response.status_code == 201
 
@@ -72,25 +77,27 @@ def test_create_item(client: TestClient):
     assert response_task.text == created_task_text
 
     # Verify the response contains the Location header
-    assert response.headers.get('Location') == '/tasks/%d/' % response_task.id
+    assert response.headers.get("Location") == "/tasks/%d/" % response_task.id
 
 
 def test_create_item_without_text(client: TestClient):
-    response = client.post('/tasks/', json={})
+    """Test invalid task creation API endpoint."""
+    response = client.post("/tasks/", json={})
     assert response.status_code == 422
 
 
-@pytest.mark.parametrize('http_method', ['GET', 'PUT', 'DELETE'])
+@pytest.mark.parametrize("http_method", ["GET", "PUT", "DELETE"])
 def test_inexistent_task_returns_404(client: TestClient, http_method: str):
+    """Test inexistent task instance retrieve API endpoint."""
     inexistent_task_id = 999
-    url = f'/tasks/{inexistent_task_id}/'
+    url = f"/tasks/{inexistent_task_id}/"
     expected_detail = (
-        f'Task with the given [{inexistent_task_id}] id does not exist.'
+        f"Task with the given [{inexistent_task_id}] id does not exist."
     )
 
-    if http_method == 'PUT':
+    if http_method == "PUT":
         response = client.put(url, json={})
-    elif http_method == 'DELETE':
+    elif http_method == "DELETE":
         response = client.delete(url)
     else:
         response = client.get(url)
@@ -98,11 +105,12 @@ def test_inexistent_task_returns_404(client: TestClient, http_method: str):
     assert response.status_code == 404
 
     data = response.json()
-    assert data == {'detail': expected_detail}
+    assert data == {"detail": expected_detail}
 
 
 def test_retrieve_task_instance(client: TestClient, task: Task):
-    response = client.get('/tasks/%d/' % task.id)
+    """Test task instance retrieve API endpoint."""
+    response = client.get("/tasks/%d/" % task.id)
     assert response.status_code == 200
 
     response_task = Task(**response.json())
@@ -112,7 +120,8 @@ def test_retrieve_task_instance(client: TestClient, task: Task):
 
 
 def test_update_task_instance(client: TestClient, task: Task):
-    updated_task_text = 'Update task text'
+    """Test task instance update API endpoint."""
+    updated_task_text = "Update task text"
     updated_task_is_completed = not task.is_completed
     # Need to copy the given task data into the new variable, because
     # the `task` argument updates on client.put call
@@ -123,14 +132,14 @@ def test_update_task_instance(client: TestClient, task: Task):
 
     if updated_task_text == task.text:
         raise ValueError(
-            'Updated task text can not be equal with existed task text.',
+            "Updated task text can not be equal with existed task text.",
         )
 
     response = client.put(
-        f'/tasks/{task.id}/',
+        f"/tasks/{task.id}/",
         json={
-            'text': updated_task_text,
-            'is_completed': updated_task_is_completed,
+            "text": updated_task_text,
+            "is_completed": updated_task_is_completed,
         },
     )
 
@@ -161,18 +170,20 @@ def test_update_task_instance_with_invalid_data(
     client: TestClient,
     task: Task,
 ):
-    invalid_task_text = 'the_random_text_with_more_then_150_chars' * 10
+    """Test invalid task instance update API endpoint."""
+    invalid_task_text = "the_random_text_with_more_then_150_chars" * 10
     response = client.put(
-        f'/tasks/{task.id}/',
-        json={'text': invalid_task_text},
+        f"/tasks/{task.id}/",
+        json={"text": invalid_task_text},
     )
     assert response.status_code == 422
 
 
 def test_delete_task_instance(client: TestClient, task: Task):
-    response = client.delete(f'/tasks/{task.id}/')
+    """Test task instance delete API endpoint."""
+    response = client.delete(f"/tasks/{task.id}/")
     assert response.status_code == 204
-    assert response.headers.get('Cache-Control') == 'no-cache, no-store'
+    assert response.headers.get("Cache-Control") == "no-cache, no-store"
 
-    retrieve_response = client.get(f'/tasks/{task.id}/')
+    retrieve_response = client.get(f"/tasks/{task.id}/")
     assert retrieve_response.status_code == 404

@@ -20,49 +20,52 @@ router = APIRouter(
 )
 
 
-@router.get('/', response_model=Page[Task])
+@router.get("/", response_model=Page[Task])
 def get_all_tasks(session: Annotated[Session, Depends(get_session)]):
+    """Get all tasks list."""
     return paginate(session, select(Task).order_by(Task.created_at))
 
 
-@router.post('/', response_model=Task)
+@router.post("/", response_model=Task)
 def create_task(
     task: TaskCreate,
     session: Annotated[Session, Depends(get_session)],
 ):
+    """Create new task instance."""
     created_task = save_task(Task(**task.model_dump()), session)
 
     return JSONResponse(
         content=jsonable_encoder(created_task),
         status_code=201,
         headers={
-            'Location': router.prefix + '/%d/' % created_task.id,
-            'Content-Type': 'application/json',
+            "Location": router.prefix + "/%d/" % created_task.id,
+            "Content-Type": "application/json",
         },
     )
 
 
 @router.get(
-    '/{task_id}/',
+    "/{task_id}/",
     response_model=Optional[Task],
     responses={
         404: {
-            'model': HTTPError,
-            'description': 'Task does not exist',
+            "model": HTTPError,
+            "description": "Task does not exist",
         },
     },
 )
 def retrieve_task_instance(task: Annotated[int, Depends(retrieve_task)]):
+    """Retrieve task instance by id."""
     return task
 
 
 @router.put(
-    '/{task_id}/',
+    "/{task_id}/",
     response_model=Task,
     responses={
         404: {
-            'model': HTTPError,
-            'description': 'Task does not exist',
+            "model": HTTPError,
+            "description": "Task does not exist",
         },
     },
 )
@@ -71,6 +74,7 @@ def update_task_instance(
     task: Annotated[Task, Depends(retrieve_task)],
     session: Annotated[Session, Depends(get_session)],
 ):
+    """Update task instance by id."""
     for field, value in task_update.model_dump().items():
         if value is not None:
             setattr(task, field, value)
@@ -80,15 +84,15 @@ def update_task_instance(
 
 
 @router.delete(
-    '/{task_id}/',
+    "/{task_id}/",
     responses={
         204: {
-            'model': None,
-            'description': 'No content',
+            "model": None,
+            "description": "No content",
         },
         404: {
-            'model': HTTPError,
-            'description': 'Task does not exist',
+            "model": HTTPError,
+            "description": "Task does not exist",
         },
     },
     status_code=204,
@@ -97,6 +101,7 @@ def delete_task_instance(
     task: Annotated[Task, Depends(retrieve_task)],
     session: Annotated[Session, Depends(get_session)],
 ):
+    """Delete task instance by id."""
     session.delete(task)
     session.commit()
 
